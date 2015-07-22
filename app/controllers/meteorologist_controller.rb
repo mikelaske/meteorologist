@@ -18,24 +18,19 @@ class MeteorologistController < ApplicationController
     # ==========================================================================
 
 
-  def temp
-          require 'uri'
-          url = "https://api.forecast.io/forecast/5fa7d55c02984ea9bcad2898c1e155c4/#{@lat},#{@lng}"
+@url_weather = "https://api.forecast.io/forecast/0b529255c0bf79aaa413b086319ddc79/" + @lat + "," + @lng
+@parsed = JSON.parse(open(@url_weather).read)
 
 
-               parsed_data = JSON.parse(open(url).read)
-               temperature = parsed_data["currently"]["temperature"]
-    end
+    @current_temperature = @parsed["currently"]["temperature"]
 
-    @current_temperature = "currently.temperature"
+    @current_summary = @parsed["currently"]["summary"]
 
-    @current_summary = "currently.summary"
+    @summary_of_next_sixty_minutes = @parsed["minutely"]["summary"]
 
-    @summary_of_next_sixty_minutes = "minutely.data[60].time"
+    @summary_of_next_several_hours = @parsed["hourly"]["summary"]
 
-    @summary_of_next_several_hours = "minutely.data[180].time"
-
-    @summary_of_next_several_days = "minutely.data[7200].time"
+    @summary_of_next_several_days = @parsed["daily"]["summary"]
 
     render("street_to_weather.html.erb")
   end
